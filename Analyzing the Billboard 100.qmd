@@ -1,0 +1,6 @@
+---
+title: "Analyzing the Billboard 100"
+Author: Grayson Medico
+format: html
+---
+
