@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Grayson Medico">
 
 <title>Analyzing the Billboard 100</title>
 <style>
@@ -53,6 +54,12 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Grayson Medico </p>
+          </div>
+  </div>
     
   
     
@@ -63,7 +70,111 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using method = 'loess' and formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 5 rows containing non-finite outside the scale range
+(`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 5 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analyzing-the-Billboard-100_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analyzing-the-Billboard-100_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analyzing-the-Billboard-100_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analyzing-the-Billboard-100_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 317 × 6
+   artist                           track   date.entered week1 week2 improvement
+   &lt;chr&gt;                            &lt;chr&gt;   &lt;date&gt;       &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;
+ 1 "Santana"                        Maria,… 2000-02-12      15     8           7
+ 2 "Hanson"                         This T… 2000-04-22      22    22           0
+ 3 "Pink"                           There … 2000-03-04      25    15          10
+ 4 "Carey, Mariah"                  Crybaby 2000-06-24      28    34          -6
+ 5 "Elliott, Missy \"Misdemeanor\"" Hot Bo… 1999-11-27      36    21          15
+ 6 "Martin, Ricky"                  She Ba… 2000-10-07      38    28          10
+ 7 "Backstreet Boys, The"           Shape … 2000-10-14      39    25          14
+ 8 "Dixie Chicks, The"              Goodby… 2000-03-18      40    29          11
+ 9 "Madonna"                        Music   2000-08-12      41    23          18
+10 "N'Sync"                         Bye By… 2000-01-29      42    20          22
+# ℹ 307 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 5 rows containing non-finite outside the scale range
+(`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analyzing-the-Billboard-100_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in element_text(size = 12, color = "grey30", italic = TRUE): `...` must be empty.
+✖ Problematic argument:
+• italic = TRUE
+Removed 5 rows containing non-finite outside the scale range (`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Analyzing-the-Billboard-100_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  artist.familiarity artist.hotttnesss artist.id         
+  &lt;chr&gt;              &lt;chr&gt;             &lt;chr&gt;             
+1 0.581793766        0.401997543       ARD7TVE1187B99BFB1
+2 0.630630038        0.417499645       ARMJAGH1187FB546F3
+3 0.487356791        0.343428378       ARKRRTF1187B9984DA</code></pre>
+</div>
+</div>
 
 </main>
 <!-- /main column -->

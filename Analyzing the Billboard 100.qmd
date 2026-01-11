@@ -1,6 +1,226 @@
 ---
 title: "Analyzing the Billboard 100"
-Author: Grayson Medico
+author: Grayson Medico
 format: html
+execute: 
+   echo: false
 ---
 
+```{r}
+#| message: false
+library(tidyverse)
+```
+
+```{r}
+ggplot(data = billboard, mapping = aes(x = wk1, y = wk2)) +
+  geom_point() +
+  geom_smooth() +
+  labs(
+    title = "Billboard Top 100: Week 1 vs. Week 2 Rankings",
+    subtitle = "Comparing song performance from entry to the following week",
+    x = "Ranking in Week 1",
+    y = "Ranking in Week 2",
+    caption = "Source: Billboard dataset (2000)"
+  )
+```
+
+```{r}
+#| message: false
+#| warning: false
+
+# 1. Load libraries and data (Ensures everything is fresh for the renderer)
+library(tidyverse)
+
+# 2. Process data
+# Note: Using exact track names from the billboard dataset
+billboard_long <- billboard %>%
+  filter(track %in% c("Baby Don't Cry (Keep...", "Kryptonite", "Loser")) %>%
+  pivot_longer(
+    cols = starts_with("wk"), 
+    names_to = "week", 
+    values_to = "rank"
+  ) %>%
+  # Filter for only the first 5 weeks to keep the plot clean
+  filter(week %in% c("wk1", "wk2", "wk3", "wk4", "wk5")) %>%
+  # Remove rows with missing ranks so geom_path/line doesn't break
+  drop_na(rank)
+
+# 3. Create and Assign the Plot
+line_graph <- ggplot(data = billboard_long, 
+                     mapping = aes(x = week, 
+                                   y = rank, 
+                                   group = track, 
+                                   color = track)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 3) +
+  scale_y_reverse() + # Standard for chart rankings (1 at top)
+  facet_wrap(~track) +
+  labs(
+    title = "Billboard Top 100 Performance",
+    subtitle = "Weekly ranking trends for selected tracks (Weeks 1-5)",
+    x = "Chart Week",
+    y = "Rank (1 is Best)",
+    caption = "Source: Tidyverse Billboard Dataset"
+  ) +
+  theme_minimal(base_size = 14) + # Larger text for presentations
+  theme(
+    legend.position = "none",
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold") # Makes track titles stand out
+  )
+
+# 4. Explicitly print the graph to the document
+line_graph
+
+# 5. Save a high-quality version for your presentation slides
+# We use 'device = "png"' to ensure R knows exactly how to handle the file
+ggsave(
+  filename = "billboard_final_plot.png", 
+  plot = line_graph, 
+  device = "png",
+  width = 10, 
+  height = 6, 
+  units = "in",
+  dpi = 300
+)
+```
+
+```{r}
+# 1. Prepare the data (Filter for 3 songs and pivot)
+billboard_boxplot_data <- billboard %>%
+  filter(track %in% c("Baby Don't Cry (Keep...", "Kryptonite", "Loser")) %>%
+  pivot_longer(
+    cols = starts_with("wk"), 
+    names_to = "week", 
+    values_to = "rank"
+  ) %>%
+  drop_na(rank) # Critical for boxplots to remove weeks the song wasn't on charts
+
+# 2. Create the boxplot
+ggplot(data = billboard_boxplot_data, mapping = aes(x = track, y = rank, fill = track)) +
+  geom_boxplot(outlier.color = "red", outlier.shape = 16) +
+  scale_y_reverse() + # Keeps Rank #1 at the top
+  labs(
+    title = "Distribution of Chart Ranks",
+    subtitle = "Comparing the overall chart 'stay' for three tracks",
+    x = "Song Title",
+    y = "Rank (1 is Top)",
+    caption = "Note: Red dots indicate outlier rankings"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none") # Titles are already on the X-axis
+```
+
+```{r}
+# 1. Prepare the data
+# We pivot all weeks and drop NAs so we only count weeks the song was actually on the chart
+billboard_counts <- billboard %>%
+  filter(track %in% c("Baby Don't Cry (Keep...", "Kryptonite", "Loser")) %>%
+  pivot_longer(
+    cols = starts_with("wk"),
+    names_to = "week",
+    values_to = "rank"
+  ) %>%
+  drop_na(rank)
+
+# 2. Create the bar graph
+ggplot(data = billboard_counts, mapping = aes(x = track, fill = track)) +
+  geom_bar() +
+  labs(
+    title = "Song Longevity on Billboard Top 100",
+    subtitle = "Total number of weeks spent on the chart",
+    x = "Song Title",
+    y = "Total Weeks",
+    caption = "Source: Billboard Dataset"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| cache: true
+
+# Assigning the result of the pipe to billboard_clean
+billboard_clean <- billboard %>%
+  filter(wk1 < 101) %>%
+  arrange(wk1) %>%
+  mutate(
+    improvement = wk1 - wk2, 
+    .after = wk2
+  ) %>%
+  select(artist:improvement) %>%
+  rename(
+    week1 = wk1,
+    week2 = wk2
+  )
+
+# Display the result so it shows in your document
+billboard_clean
+```
+
+```{r}
+ggplot(data = billboard_clean, aes(x = improvement)) +
+  geom_histogram(binwidth = 2, fill = "steelblue", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red", size = 1) +
+  labs(
+    title = "Distribution of Chart Rank Improvement",
+    subtitle = "Comparing performance change from Week 1 to Week 2",
+    x = "Rank Improvement (Positive = Climbed the Chart)",
+    y = "Number of Songs",
+    caption = "Source: Billboard 2000 Dataset | Red line indicates no change"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+  # Data reference from billboard_clean:
+# artist  track                   date.entered week1 week2 improvement
+# 2 Pac   Baby Don't Cry (Keep... 2000-02-26      87    82           5
+# 2Ge+her The Hardest Part Of ... 2000-09-02      91    87           4
+# 3 Doors Kryptonite              2000-04-08      81    70          11
+
+ggplot(data = billboard_clean, aes(x = improvement)) +
+  geom_histogram(binwidth = 2, fill = "steelblue", color = "white", alpha = 0.85) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "firebrick", size = 0.8) +
+  labs(
+    title = "Analysis of Billboard Chart Movement",
+    subtitle = "Rank change from Week 1 to Week 2 for Top 100 entries",
+    x = "Improvement in Rank (Positive = Upward Climb)",
+    y = "Number of Songs",
+    caption = "Data source: 2000 Billboard Dataset | Red line indicates no rank change"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    # Make the main title bold and larger
+    plot.title = element_text(face = "bold", size = 18, margin = margin(b = 10)),
+    
+    # Style the subtitle and caption
+    plot.subtitle = element_text(size = 12, color = "grey30", italic = TRUE),
+    plot.caption = element_text(size = 9, color = "grey50", hjust = 0),
+    
+    # Clean up the grid lines for a more 'modern' look
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(), # Removes vertical lines to focus on horizontal count
+    
+    # Ensure axis titles are clear
+    axis.title.x = element_text(margin = margin(t = 15)),
+    axis.title.y = element_text(margin = margin(r = 15)),
+    
+    # Add a subtle background color to make the bars pop
+    plot.background = element_rect(fill = "white", color = NA)
+  )
+```
+
+```{r}
+library(tidyverse)
+
+# Creating a 3-row version of the music tibble
+tibble(
+  artist.familiarity = c("0.581793766", "0.630630038", "0.487356791"),
+  artist.hotttnesss = c("0.401997543", "0.417499645", "0.343428378"),
+  artist.id = c("ARD7TVE1187B99BFB1", "ARMJAGH1187FB546F3", "ARKRRTF1187B9984DA")
+)
+```
